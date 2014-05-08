@@ -120,7 +120,11 @@ class CacheController extends AbstractActionController
     {
         $cache = $this->getCache();
         if (!$cache instanceof OptimizableInterface) {
-            throw new \Exception();
+            $type = get_class($cache);
+            $type = substr($type, strrpos($type, '\\') + 1);
+            throw new \Exception(sprintf(
+                'The cache type %s does not support optimizing', strtolower($type)
+            ));
         }
 
         $result  = $cache->optimize();
