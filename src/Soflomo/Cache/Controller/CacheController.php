@@ -140,31 +140,7 @@ class CacheController extends AbstractActionController
 
         if (null === $name) {
             // There is no name given, fetch the default from the caches array
-
-            $config = $sl->get('Config');
-            if (!array_key_exists('caches', $config)) {
-                throw new \Exception('There is no cache configured');
-            }
-
-            $caches = $config['caches'];
-            if (count($caches) === 1) {
-                $name = key($caches);
-            } elseif(count($caches) > 1) {
-                $options = array_keys($caches);
-
-                // Increase the keys by 1 since arrays are zero-based keys
-                array_unshift($options, null);
-                unset($options[0]);
-
-                $answer  = ConsoleSelect::prompt(
-                    'You have multiple caches defined, please select one',
-                    $options
-                );
-
-                $name = $options[$answer];
-            } else {
-                throw new \Exception('No cache name defined, no cache is configured');
-            }
+            $name = $this->getCacheName();
         }
 
         $cache = $sl->get($name);
@@ -173,6 +149,34 @@ class CacheController extends AbstractActionController
         }
 
         return $cache;
+    }
+
+    protected function getCacheName()
+    {
+        $config = $sl->get('Config');
+        if (!array_key_exists('caches', $config)) {
+            throw new \Exception('There is no cache configured');
+        }
+
+        $caches = $config['caches'];
+        if (count($caches) === 1) {
+            $name = key($caches);
+        } elseif(count($caches) > 1) {
+            $options = array_keys($caches);
+
+            // Increase the keys by 1 since arrays are zero-based keys
+            array_unshift($options, null);
+            unset($options[0]);
+
+            $answer  = ConsoleSelect::prompt(
+                'You have multiple caches defined, please select one',
+                $options
+            );
+
+            $name = $options[$answer];
+        } else {
+            throw new \Exception('No cache name defined, no cache is configured');
+        }
     }
 
     protected function getConsole()
