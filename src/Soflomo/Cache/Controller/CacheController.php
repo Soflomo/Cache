@@ -135,7 +135,6 @@ class CacheController extends AbstractActionController
 
     protected function getCache()
     {
-        $sl   = $this->getServiceLocator();
         $name = $this->params('name', null);
 
         if (null === $name) {
@@ -143,7 +142,7 @@ class CacheController extends AbstractActionController
             $name = $this->getCacheName();
         }
 
-        $cache = $sl->get($name);
+        $cache = $this->getServiceLocator()->get($name);
         if (!$cache instanceof StorageInterface) {
             throw new \Exception('Cache is not a cache storage');
         }
@@ -153,30 +152,32 @@ class CacheController extends AbstractActionController
 
     protected function getCacheName()
     {
-        $config = $sl->get('Config');
+        $config = $this->getServiceLocator()->get('Config');
         if (!array_key_exists('caches', $config)) {
             throw new \Exception('There is no cache configured');
         }
 
         $caches = $config['caches'];
-        if (count($caches) === 1) {
-            $name = key($caches);
-        } elseif(count($caches) > 1) {
-            $options = array_keys($caches);
-
-            // Increase the keys by 1 since arrays are zero-based keys
-            array_unshift($options, null);
-            unset($options[0]);
-
-            $answer  = ConsoleSelect::prompt(
-                'You have multiple caches defined, please select one',
-                $options
-            );
-
-            $name = $options[$answer];
-        } else {
+        if (count($caches) === 0) {
             throw new \Exception('No cache name defined, no cache is configured');
         }
+
+        if (count($caches) === 1) {
+            return key($caches);
+        }
+
+        $options = array_keys($caches);
+
+        // Increase the keys by 1 since arrays are zero-based keys
+        array_unshift($options, null);
+        unset($options[0]);
+
+        $answer  = ConsoleSelect::prompt(
+            'You have multiple caches defined, please select one',
+            $options
+        );
+
+        return $options[$answer];
     }
 
     protected function getConsole()
