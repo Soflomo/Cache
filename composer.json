@@ -1,0 +1,32 @@
+{
+    "name": "soflomo/cache",
+    "description": "Command line utility for cache management in Zend Framework 2",
+    "license": "BSD-3-Clause",
+    "type": "library",
+    "keywords": [
+        "zf2",
+        "cache",
+        "cli"
+    ],
+    "homepage": "https://github.com/Soflomo/Cache",
+    "authors": [
+        {
+            "name": "Jurian Sluiman",
+            "email": "jurian@soflomo.com",
+            "homepage": "http://soflomo.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zend-cache": "~2.0",
+        "zendframework/zend-mvc": "~2.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Soflomo\\Cache": "src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}
