@@ -42,6 +42,9 @@ namespace Soflomo\Cache\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
+use Zend\Cache\Storage\ClearExpiredInterface;
+use Zend\Cache\Storage\ClearByNamespaceInterface;
+use Zend\Cache\Storage\ClearByPrefixInterface;
 use Zend\Cache\Storage\OptimizableInterface;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
@@ -49,6 +52,7 @@ use Zend\Cache\Storage\StorageInterface;
 
 use Zend\Console\ColorInterface as Color;
 use Zend\Console\Prompt\Select  as ConsoleSelect;
+use Zend\Console\Prompt\Confirm as ConsoleConfirm;
 
 class CacheController extends AbstractActionController
 {
@@ -135,18 +139,68 @@ class CacheController extends AbstractActionController
 
     public function clearAction()
     {
-        $cache = $this->getCache();
+        $cache   = $this->getCache();
+        $console = $this->getConsole();
 
         $clear = $this->params('clear');
         $flush = $this->params('flush');
+        $force = $this->params('force') || $this->params('f');
+
         if ($flush === true) {
-            $force = $this->params('force') || $this->params('f');
-            var_dump($flush, $force);
-        } elseif ($clear === true) {
-            $expired = $this->params('expired') || $this->params('e');
-            $namespace = $this->params('by-namespace');
-            $prefix = $this->params('by-prefix');
-            var_dump($clear, $expired, $namespace, $prefix);
+            if (!$force) {
+                if (!ConsoleConfirm::prompt('Are you sure to flush the cache? [y/n] ')) {
+                    $console->writeLine('Not flushing cache');
+                    return;
+                }
+            }
+
+            $cache->flush();
+            $console->writeLine('Cache flushed');
+            return;
+        }
+
+        if ($clear === true) {
+            if (!$force) {
+                if (!ConsoleConfirm::prompt('Are you sure to clear the cache? [y/n] ')) {
+                    $console->writeLine('Not clearing cache');
+                    return;
+                }
+            }
+
+            if ($this->params('expired') || $this->params('e')) {
+                if (!$cache instanceof ClearExpiredInterface) {
+                    $console->writeLine(sprintf('Cache does not support to clear expired items'), Color::WHITE, Color::RED);
+                    return;
+                }
+
+                $cache->clearExpired();
+                $console->writeLine('Cache cleared from expired items');
+                return;
+            }
+
+            $namespace = $this->params('by-namespace', false);
+            if ($namespace) {
+                if (!$cache instanceof ClearByNamespaceInterface) {
+                    $console->writeLine(sprintf('Cache does not supprt to clear by namespace'), Color::WHITE, Color::RED);
+                    return;
+                }
+
+                $cache->clearByNamespace($namespace);
+                $console->writeLine('Cache cleared all items namespaced with ' . $namespace);
+                return;
+            }
+
+            $prefix = $this->params('by-prefix', false);
+            if ($prefix) {
+                if (!$cache instanceof ClearByPrefixInterface) {
+                    $console->writeLine(sprintf('Cache does not support to clear by prefix'), Color::WHITE, Color::RED);
+                    return;
+                }
+
+                $cache->clearByPrefix($prefix);
+                $console->writeLine('Cache cleared all items prefixed with ' . $prefix);
+                return;
+            }
         }
     }
 
