@@ -4,12 +4,30 @@ return array(
      'console' => array(
         'router' => array(
             'routes' => array(
+                'cache-list' => array(
+                    'options' => array(
+                        'route'    => 'cache --list',
+                        'defaults' => array(
+                            'controller' => 'Soflomo\Cache\Controller\CacheController',
+                            'action'     => 'list'
+                        ),
+                    ),
+                ),
                 'cache-status' => array(
                     'options' => array(
                         'route'    => 'cache --status [<name>] [-h]',
                         'defaults' => array(
                             'controller' => 'Soflomo\Cache\Controller\CacheController',
                             'action'     => 'status'
+                        ),
+                    ),
+                ),
+                'cache-status-list' => array(
+                    'options' => array(
+                        'route'    => 'cache --status --list [-h]',
+                        'defaults' => array(
+                            'controller' => 'Soflomo\Cache\Controller\CacheController',
+                            'action'     => 'status-list'
                         ),
                     ),
                 ),

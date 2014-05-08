@@ -52,12 +52,43 @@ use Zend\Console\Prompt\Select  as ConsoleSelect;
 
 class CacheController extends AbstractActionController
 {
+    public function listAction()
+    {
+        $console = $this->getConsole();
+        $caches  = array_keys($this->getCaches());
+
+        foreach ($caches as $cache) {
+            $console->writeLine($cache);
+        }
+    }
+
     public function statusAction()
     {
         $cache   = $this->getCache();
         $console = $this->getConsole();
 
-        $console->writeLine('Cache space:');
+        $console->writeLine('Cache space for selected cache:');
+        $this->writeCacheStatus($cache);
+    }
+
+    public function statusListAction()
+    {
+        $console = $this->getConsole();
+        $caches  = array_keys($this->getcaches());
+
+        foreach ($caches as $name) {
+            $console->writeLine('Status information for ' . $name);
+
+            $cache = $this->getServiceLocator()->get($name);
+            $this->writeCacheStatus($cache);
+
+            $console->writeLine('');
+        }
+    }
+
+    protected function writeCacheStatus(StorageInterface $cache)
+    {
+        $console = $this->getConsole();
 
         if ($cache instanceof TotalSpaceCapableInterface) {
             $space = $cache->getTotalSpace();
@@ -147,10 +178,9 @@ class CacheController extends AbstractActionController
 
     protected function getCache()
     {
-        $name = $this->params('name', null);
+        $name = $this->params('name');
 
         if (null === $name) {
-            // There is no name given, fetch the default from the caches array
             $name = $this->getCacheName();
         }
 
@@ -164,14 +194,9 @@ class CacheController extends AbstractActionController
 
     protected function getCacheName()
     {
-        $config = $this->getServiceLocator()->get('Config');
-        if (!array_key_exists('caches', $config)) {
-            throw new \Exception('There is no cache configured');
-        }
-
-        $caches = $config['caches'];
+        $caches = $this->getCaches();
         if (count($caches) === 0) {
-            throw new \Exception('No cache name defined, no cache is configured');
+            throw new \Exception('No abstract caches registerd to select');
         }
 
         if (count($caches) === 1) {
@@ -190,6 +215,17 @@ class CacheController extends AbstractActionController
         );
 
         return $options[$answer];
+    }
+
+    protected function getCaches()
+    {
+        $config  = $this->getServiceLocator()->get('Config');
+
+        if (!array_key_exists('caches', $config)) {
+            throw new \Exception('No abstract caches registerd to select');
+        }
+
+        return $config['caches'];
     }
 
     protected function getConsole()
