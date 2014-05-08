@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2013 Soflomo.
+ * Copyright (c) 2013-2014 Soflomo.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @author      Jurian Sluiman <jurian@soflomo.com>
- * @copyright   2013 Soflomo.
+ * @copyright   2013-2014 Soflomo.
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link        http://soflomo.com
  */

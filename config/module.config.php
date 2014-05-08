@@ -6,7 +6,7 @@ return array(
             'routes' => array(
                 'cache-status' => array(
                     'options' => array(
-                        'route'    => 'cache --status [<name>]',
+                        'route'    => 'cache --status [<name>] [-h]',
                         'defaults' => array(
                             'controller' => 'Soflomo\Cache\Controller\CacheController',
                             'action'     => 'status'

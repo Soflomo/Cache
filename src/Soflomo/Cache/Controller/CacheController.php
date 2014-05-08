@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2013 Soflomo.
+ * Copyright (c) 2013-2014 Soflomo.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @author      Jurian Sluiman <jurian@soflomo.com>
- * @copyright   2013 Soflomo.
+ * @copyright   2013-2014 Soflomo.
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link        http://soflomo.com
  */
@@ -61,23 +61,13 @@ class CacheController extends AbstractActionController
 
         if ($cache instanceof TotalSpaceCapableInterface) {
             $space = $cache->getTotalSpace();
-            $unit  = 'B';
 
-            if ($space > 1024) {
-                $space = $space/1024;
-                $unit  = 'KB';
-            }
-            if ($space > 1024) {
-                $space = $space/1024;
-                $unit  = 'MB';
-            }
-            if ($space > 1024) {
-                $space = $space/1024;
-                $unit  = 'GB';
+            if ($this->params('h')) {
+                $space = $this->convertToHumanSpace($space);
             }
 
             $console->writeLine(sprintf(
-                '%d%s total space', $space, $unit
+                '%s total space', $space
             ));
         } else {
             $console->writeLine('Cache adapter does not provide information about the total space of this cache');
@@ -85,30 +75,36 @@ class CacheController extends AbstractActionController
 
         if ($cache instanceof AvailableSpaceCapableInterface) {
             $space = $cache->getAvailableSpace();
-            $unit  = 'B';
 
-            if ($space > 1024) {
-                $space = $space/1024;
-                $unit  = 'KB';
-            }
-            if ($space > 1024) {
-                $space = $space/1024;
-                $unit  = 'MB';
-            }
-            if ($space > 1024) {
-                $space = $space/1024;
-                $unit  = 'GB';
+            if ($this->params('h')) {
+                $space = $this->convertToHumanSpace($space);
             }
 
             $console->writeLine(sprintf(
-                '%d%s available', $space, $unit
+                '%s available', $space
             ));
         } else {
             $console->writeLine('Cache adapter does not provide information about the available space of this cache');
         }
+    }
 
-        // Create empty line
-        $console->writeLine('');
+    protected function convertToHumanSpace($space)
+    {
+        $unit  = 'B';
+        if ($space > 1024) {
+            $space = $space/1024;
+            $unit  = 'KB';
+        }
+        if ($space > 1024) {
+            $space = $space/1024;
+            $unit  = 'MB';
+        }
+        if ($space > 1024) {
+            $space = $space/1024;
+            $unit  = 'GB';
+        }
+
+        return sprintf('%d%s', $space, $unit);
     }
 
     public function clearAction()
