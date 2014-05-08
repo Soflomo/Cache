@@ -90,6 +90,10 @@ class Module implements
 
             array('<name>',          'Optional service name of the cache'),
             array('-h',              'Show status in human readable output'),
+
+            'Application configuration files',
+            'cache --clear-config'                                => 'Clear the merged configuration file',
+            'cache --clear-module-map'                            => 'Clear the module map',
         );
     }
 }

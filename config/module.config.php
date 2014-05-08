@@ -49,13 +49,33 @@ return array(
                         ),
                     ),
                 ),
+
+                'fw-cache-config' => array(
+                    'options' => array(
+                        'route'    => 'cache --clear-config',
+                        'defaults' => array(
+                            'controller' => 'Soflomo\Cache\Controller\FwCacheController',
+                            'action'     => 'clear-config'
+                        ),
+                    ),
+                ),
+                'fw-cache-module' => array(
+                    'options' => array(
+                        'route'    => 'cache --clear-module-map',
+                        'defaults' => array(
+                            'controller' => 'Soflomo\Cache\Controller\FwCacheController',
+                            'action'     => 'clear-module-map'
+                        ),
+                    ),
+                ),
             ),
         ),
     ),
 
     'controllers' => array(
         'invokables' => array(
-            'Soflomo\Cache\Controller\CacheController' => 'Soflomo\Cache\Controller\CacheController',
+            'Soflomo\Cache\Controller\CacheController'   => 'Soflomo\Cache\Controller\CacheController',
+            'Soflomo\Cache\Controller\FwCacheController' => 'Soflomo\Cache\Controller\FwCacheController',
         ),
     ),
 );
