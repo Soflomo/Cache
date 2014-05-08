@@ -74,7 +74,7 @@ class Module implements
             'cache --clear [--force|-f] [<name>] --by-namespace=' => 'Clear cache by namespace',
             'cache --clear [--force|-f] [<name>] --by-prefix='    => 'Clear cache by prefix',
 
-            array('<name>',          'Name of the cache; in case there is one cache it can be left blank'),
+            array('<name>',          'Optional service name of the cache'),
             array('--expired|-e',    'Clear all expired items in cache'),
             array('--by-namespace=', 'Clear all items in cache with given namespace'),
             array('--by-prefix=',    'Clear all items in cache with given prefix'),
@@ -83,12 +83,12 @@ class Module implements
             'Optimize',
             'cache --optimize [<name>]'                           => 'Optimize cache',
 
-            array('<name>',          'Name of the cache; in case there is one cache it can be left blank'),
+            array('<name>',          'Optional service name of the cache'),
 
             'Status information',
             'cache --status [<name>] [-h]'                        => 'Show (storage) information about the cache',
 
-            array('<name>',          'Name of the cache; in case there is one cache it can be left blank'),
+            array('<name>',          'Optional service name of the cache'),
             array('-h',              'Show status in human readable output'),
         );
     }
