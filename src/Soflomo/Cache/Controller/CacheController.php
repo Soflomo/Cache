@@ -89,13 +89,11 @@ class CacheController extends AbstractActionController
     protected function writeCacheStatus(StorageInterface $cache)
     {
         $console = $this->getConsole();
+        $human   = $this->params('h');
 
         if ($cache instanceof TotalSpaceCapableInterface) {
             $space = $cache->getTotalSpace();
-
-            if ($this->params('h')) {
-                $space = $this->convertToHumanSpace($space);
-            }
+            $space = $human ? $this->convertToHumanSpace($space) : $space;
 
             $console->writeLine(sprintf(
                 '%s total space', $space
@@ -106,10 +104,7 @@ class CacheController extends AbstractActionController
 
         if ($cache instanceof AvailableSpaceCapableInterface) {
             $space = $cache->getAvailableSpace();
-
-            if ($this->params('h')) {
-                $space = $this->convertToHumanSpace($space);
-            }
+            $space = $human ? $this->convertToHumanSpace($space) : $space;
 
             $console->writeLine(sprintf(
                 '%s available', $space
