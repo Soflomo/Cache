@@ -48,6 +48,7 @@ use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\StorageInterface;
 
 use Zend\Console\ColorInterface as Color;
+use Zend\Console\Prompt\Select  as ConsoleSelect;
 
 class CacheController extends AbstractActionController
 {
@@ -146,11 +147,24 @@ class CacheController extends AbstractActionController
             }
 
             $caches = $config['caches'];
-            if (count($caches) !== 1) {
-                throw new \Exception('Multiple caches configured, select a cache name first');
-            }
+            if (count($caches) === 1) {
+                $name = key($caches);
+            } elseif(count($caches) > 1) {
+                $options = array_keys($caches);
 
-            $name = key($caches);
+                // Increase the keys by 1 since arrays are zero-based keys
+                array_unshift($options, null);
+                unset($options[0]);
+
+                $answer  = ConsoleSelect::prompt(
+                    'You have multiple caches defined, please select one',
+                    $options
+                );
+
+                $name = $options[$answer];
+            } else {
+                throw new \Exception('No cache name defined, no cache is configured');
+            }
         }
 
         $cache = $sl->get($name);
