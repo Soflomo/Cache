@@ -15,7 +15,7 @@ return array(
                 ),
                 'cache-clear' => array(
                     'options' => array(
-                        'route'    => 'cache (--clear|--flush):mode [--force|-f] [<name>] [--expired|-e] [--by-namespace=|-n=] [--by-prefix=|-p=]',
+                        'route'    => 'cache (--clear|--flush):mode [--force|-f] [<name>] [--expired|-e] [--by-namespace=] [--by-prefix=]',
                         'defaults' => array(
                             'controller' => 'Soflomo\Cache\Controller\CacheController',
                             'action'     => 'clear'

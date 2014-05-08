@@ -69,22 +69,27 @@ class Module implements
     {
         return array(
             'Clear',
-            'cache --flush [--force|-f] [<name>]'                       => 'Flush complete cache',
-            'cache --clear [--force|-f] [<name>] [--expired|-e]'        => 'Clear expired cache',
-            'cache --clear [--force|-f] [<name>] [--by-namespace=|-n=]' => 'Clear cache by namespace',
-            'cache --clear [--force|-f] [<name>] [--by-prefix=|-p=]'    => 'Clear cache by prefix',
+            'cache --flush [--force|-f] [<name>]'                 => 'Flush complete cache',
+            'cache --clear [--force|-f] [<name>] --expired|-e'    => 'Clear expired cache',
+            'cache --clear [--force|-f] [<name>] --by-namespace=' => 'Clear cache by namespace',
+            'cache --clear [--force|-f] [<name>] --by-prefix='    => 'Clear cache by prefix',
 
-            array('<name>',                'Name of the cache; in case there is one cache it can be left blank'),
-            array('[--expired|-e]',        'Clear all expired items in cache'),
-            array('[--by-namespace=|-n=]', 'Clear all items in cache with given namespace'),
-            array('[--by-prefix=|-p=]',    'Clear all items in cache with given prefix'),
-            array('[--force|-f]',          'Force clearing, without asking confirmation'),
+            array('<name>',          'Name of the cache; in case there is one cache it can be left blank'),
+            array('--expired|-e',    'Clear all expired items in cache'),
+            array('--by-namespace=', 'Clear all items in cache with given namespace'),
+            array('--by-prefix=',    'Clear all items in cache with given prefix'),
+            array('--force|-f',      'Force clearing, without asking confirmation'),
 
             'Optimize',
-            'cache --optimize [<name>]'                                 => 'Optimize cache',
+            'cache --optimize [<name>]'                           => 'Optimize cache',
+
+            array('<name>',          'Name of the cache; in case there is one cache it can be left blank'),
 
             'Status information',
-            'cache --status [<name>]'                                   => 'Show (storage) information about the cache',
+            'cache --status [<name>] [-h]'                        => 'Show (storage) information about the cache',
+
+            array('<name>',          'Name of the cache; in case there is one cache it can be left blank'),
+            array('-h',              'Show status in human readable output'),
         );
     }
 }

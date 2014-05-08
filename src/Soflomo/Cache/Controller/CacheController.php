@@ -110,6 +110,18 @@ class CacheController extends AbstractActionController
     public function clearAction()
     {
         $cache = $this->getCache();
+
+        $clear = $this->params('clear');
+        $flush = $this->params('flush');
+        if ($flush === true) {
+            $force = $this->params('force') || $this->params('f');
+            var_dump($flush, $force);
+        } elseif ($clear === true) {
+            $expired = $this->params('expired') || $this->params('e');
+            $namespace = $this->params('by-namespace');
+            $prefix = $this->params('by-prefix');
+            var_dump($clear, $expired, $namespace, $prefix);
+        }
     }
 
     public function optimizeAction()
