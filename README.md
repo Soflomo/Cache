@@ -202,3 +202,15 @@ php public/index.php cache --clear-config
 ```bash
 php public/index.php cache --module-map
 ```
+
+Clearing opcode cache
+---------------------
+
+At this moment, it is not possible to clear the opcode cache. The opcode caches
+of CLI and PHP-FPM are not shared and as such, you cannot control the cache from
+PHP-FPM with the CLI. 
+
+Like the Symfony [ApcBundle](https://github.com/ornicar/ApcBundle) it is required
+to create a file in the web directory and call that file via HTTP. Then the file
+itself can clear the PHP-FPM opcode cache. You can track the progress of this 
+feature in the issue #2.
