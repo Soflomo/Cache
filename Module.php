@@ -67,7 +67,7 @@ class Module implements
 
     public function getConsoleUsage(Console $console)
     {
-        return array(
+        $usage = array(
             'Clear',
             'cache --flush [--force|-f] [<name>]'                 => 'Flush complete cache',
             'cache --clear [--force|-f] [<name>] --expired|-e'    => 'Clear expired cache',
@@ -95,5 +95,18 @@ class Module implements
             'cache --clear-config'                                => 'Clear the merged configuration file',
             'cache --clear-module-map'                            => 'Clear the module map',
         );
+
+        if (class_exists('Doctrine\\ORM\\Configuration')) {
+            $usage = array_merge($usage, array(
+                'Doctrine cache',
+                'cache --doctrine-flush [--query|-q]'             => 'Flush query cache',
+                'cache --doctrine-flush [--result|-r]'            => 'Flush result cache',
+                'cache --doctrine-flush [--metadata|-m]'          => 'Flush metadata cache',
+                'cache --doctrine-flush [--hydration|-h]'         => 'Flush hydration cache',
+                'cache --doctrine-flush [--all|-a]'               => 'Flush all caches',
+            ));
+        }
+
+        return $usage;
     }
 }
