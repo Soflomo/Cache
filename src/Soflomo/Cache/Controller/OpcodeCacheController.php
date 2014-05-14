@@ -50,6 +50,15 @@ class OpcodeCacheController extends AbstractActionController
 {
     public function clearAction()
     {
+        if ($this->params('apc')) {
+            $this->clearApc();
+            return;
+        }
+        if ($this->params('opcode')) {
+            $this->clearOpcache();
+            return;
+        }
+
         if (PHP_VERSION_ID < 50500) {
             $this->clearApc();
         } else {
@@ -59,14 +68,41 @@ class OpcodeCacheController extends AbstractActionController
 
     protected function clearOpcache()
     {
-        $console = $this->getConsole();
-
-        if (!(bool) ini_get('opcache.enable_cli')) {
-            $console->writeLine('You must enable opcache in CLI before clearing opcode cache', Color::RED);
-            $console->writeLine('Check the "opcache.enable_cli" setting in your php.ini (see http://www.php.net/opcache.configuration)');
+        if(!extension_loaded('Zend Opcache')) {
+            $console->writeLine('OPcode cache is not installed, aborting', Color::RED);
             return;
         }
 
+        if (ini_get('opcache.enabled')) {
+            $console->writeLine('OPcode cache is not enabled, aborting', Color::RED);
+            $console->writeLine('Enable OPcode cache by the "opcode.enabled" setting in your php.ini (see http://www.php.net/opcode.configuration)');
+            return;
+        }
+
+        if ($this->params('web') || !$this->params('cli')) {
+            $this->clearOpcacheForWeb();
+        }
+
+        if ($this->params('cli') || !$this->params('web')) {
+            $this->clearOpCacheForCli();
+        }
+    }
+
+    protected function clearOpCacheForCli()
+    {
+        $console = $this->getConsole();
+
+        // Stop clearing if cli cache is not enabled
+        if (!(bool) ini_get('opcache.enable_cli')) {
+            // Only show the message if it's explicitly asked to clear the CLI cache
+            if ($this->params('cli')) {
+                $console->writeLine('You must enable opcache in CLI before clearing opcode cache', Color::RED);
+                $console->writeLine('Check the "opcache.enable_cli" setting in your php.ini (see http://www.php.net/opcache.configuration)');
+            }
+            return;
+        }
+
+        // Start clearing scripts cached in CLI
         $scripts = opcache_get_status(true)['scripts'];
 
         if (count($scripts) === 0) {
@@ -81,10 +117,57 @@ class OpcodeCacheController extends AbstractActionController
             }
         }
 
-        $console->writeLine(sprintf('%s OPcache files cleared', count($scripts)), Color::GREEN);
+        $console->writeLine(sprintf('%s OPcache files cleared for cli', count($scripts)), Color::GREEN);
     }
 
-    protected function cleaerApc()
+    protected function clearOpcacheForWeb()
+    {
+        $console = $this->getConsole();
+
+        if (!is_writeable('public/')) {
+            $console->writeLine('Unable to write script to public/ dir', Color::RED);
+            return;
+        }
+
+        $content = '<?php
+$scripts = opcache_get_status(true)["scripts"];
+
+if (count($scripts) === 0) {
+    error("No files cached in web OPcache");
+}
+
+$failures = array();
+foreach (array_keys($scripts) as $file) {
+    $result = opcache_invalidate($file, true);
+    if (!$result) $failures[] = $file;
+}
+if(count($failures) !== 0) error("Failed to clear web OPcache for files " . implode(", ", $failures));
+
+function error($msg) {
+    header("HTTP/1.0 500 Server Error");
+    exit($msg);
+}
+
+echo sprintf("%s OPcache files cleared for web", count($scripts));';
+
+        $file = 'clear-' . microtime() . '-' . \Zend\Math\Rand::getString(50) . '.php';
+        $file = str_replace(array('/',' '), '.', $file);
+        $path = 'public/' . $file;
+        file_put_contents($path, $content);
+
+        $client = new \Zend\Http\Client('http://localhost/' . $file);
+        $response = $client->send();
+        unlink($path);
+
+        if (!$response->isSuccess()) {
+            $console->writeLine($response->getBody(), Color::RED);
+            return;
+        }
+
+        $console->writeLine($response->getBody(), Color::GREEN);
+    }
+
+    protected function clearApc()
     {
         $console = $this->getConsole();
 

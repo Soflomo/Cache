@@ -70,7 +70,7 @@ return array(
                 ),
                 'opcode-cache-clear' => array(
                     'options' => array(
-                        'route'    => 'cache --clear-opcode',
+                        'route'    => 'cache --clear-opcode [--apc] [--opcache] [--web] [--cli]',
                         'defaults' => array(
                             'controller' => 'Soflomo\Cache\Controller\OpcodeCacheController',
                             'action'     => 'clear'
