@@ -73,7 +73,17 @@ return array(
                         'route'    => 'cache --clear-opcode',
                         'defaults' => array(
                             'controller' => 'Soflomo\Cache\Controller\OpcodeCacheController',
-                            'action'     => 'clear'
+                            'action'     => 'clear',
+                        ),
+                    ),
+                ),
+
+                'doctrine-cache-flush' => array(
+                    'options' => array(
+                        'route'    => 'cache --clear-doctrine [--query|-q] [--result|-r] [--metadata|-m] [--hydration|-h]',
+                        'defaults' => array(
+                            'controller' => 'Soflomo\Cache\Controller\DoctrineCacheController',
+                            'action'     => 'flush',
                         ),
                     ),
                 ),
@@ -83,9 +93,10 @@ return array(
 
     'controllers' => array(
         'invokables' => array(
-            'Soflomo\Cache\Controller\CacheController'       => 'Soflomo\Cache\Controller\CacheController',
-            'Soflomo\Cache\Controller\FwCacheController'     => 'Soflomo\Cache\Controller\FwCacheController',
-            'Soflomo\Cache\Controller\OpcodeCacheController' => 'Soflomo\Cache\Controller\OpcodeCacheController',
+            'Soflomo\Cache\Controller\CacheController'         => 'Soflomo\Cache\Controller\CacheController',
+            'Soflomo\Cache\Controller\FwCacheController'       => 'Soflomo\Cache\Controller\FwCacheController',
+            'Soflomo\Cache\Controller\OpcodeCacheController'   => 'Soflomo\Cache\Controller\OpcodeCacheController',
+            'Soflomo\Cache\Controller\DoctrineCacheController' => 'Soflomo\Cache\Controller\DoctrineCacheController',
         ),
     ),
 );
