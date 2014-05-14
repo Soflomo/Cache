@@ -171,6 +171,17 @@ echo sprintf("%s OPcache files cleared for web", count($scripts));';
     {
         $console = $this->getConsole();
 
+        if(!extension_loaded('apc')) {
+            $console->writeLine('APC is not installed, aborting', Color::RED);
+            return;
+        }
+
+        if (ini_get('apc.enabled')) {
+            $console->wtriteLine('APC is not enabled, aborting', Color::RED);
+            $console->writeLine('Enable APC by the "apc.enabled" setting in your php.ini (see http://www.php.net/apc.configuration)');
+            return;
+        }
+
         if (!(bool) ini_get('apc.enable_cli')) {
             $console->writeLine('You must enable APC in CLI before clearing APC cache', Color::RED);
             $console->writeLine('Check the "apc.enable_cli" setting in your php.ini (see http://www.php.net/apc.configuration)');
