@@ -48,33 +48,41 @@ class DoctrineCacheController extends AbstractActionController
     {
         $console = $this->getConsole();
         $config  = $this->getObjectManager()->getConfiguration();
-        $all     = $this->params('all') || $this->params('a');
-        $flushed = false;
-        
+
+        // All is true when no other params are given
+        $all = !$this->params('query')     && !$this->params('q')
+            && !$this->params('result')    && !$this->params('r')
+            && !$this->params('metadata')  && !$this->params('m')
+            && !$this->params('hydration') && !$this->params('h');
+
         if ($all || $this->params('query') || $this->params('q')) {
             $config->getQueryCacheImpl()->flushAll();
-            $flushed = true;
+            if (!$all) {
+                $console->writeLine('Doctrine query cache flushed');
+            }
         }
         if ($all || $this->params('result') || $this->params('r')) {
             $config->getResultCacheImpl()->flushAll();
-            $flushed = true;
+            if (!$all) {
+                $console->writeLine('Doctrine result cache flushed');
+            }
         }
         if ($all || $this->params('metadata') || $this->params('m')) {
             $config->getMetadataCacheImpl()->flushAll();
-            $flushed = true;
+            if (!$all) {
+                $console->writeLine('Doctrine metadata cache flushed');
+            }
         }
         if ($all || $this->params('hydration') || $this->params('h')) {
             $config->getHydrationCacheImpl()->flushAll();
-            $flushed = true;
+            if (!$all) {
+                $console->writeLine('Doctrine hydration cache flushed');
+            }
         }
 
-        if ($flushed) {
-            $console->writeLine('Doctrine cache flushed');
-            return;
+        if ($all) {
+            $console->writeLine('All Doctrine caches are flushed');
         }
-
-        $console->writeLine('Any Doctrine cache was flushed, you need pass at least one option');
-        return;
     }
 
     protected function getConsole()

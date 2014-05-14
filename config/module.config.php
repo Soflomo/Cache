@@ -80,7 +80,7 @@ return array(
 
                 'doctrine-cache-flush' => array(
                     'options' => array(
-                        'route'    => 'cache --doctrine-flush [--query|-q] [--result|-r] [--metadata|-m] [--hydration|-h] [--all|-a]',
+                        'route'    => 'cache --clear-doctrine [--query|-q] [--result|-r] [--metadata|-m] [--hydration|-h]',
                         'defaults' => array(
                             'controller' => 'Soflomo\Cache\Controller\DoctrineCacheController',
                             'action'     => 'flush',
