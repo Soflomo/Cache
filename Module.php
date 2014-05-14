@@ -99,14 +99,15 @@ class Module implements
         if (class_exists('Doctrine\\ORM\\Configuration')) {
             $usage = array_merge($usage, array(
                 'Doctrine cache',
-                'cache --doctrine-flush [--query|-q]'             => 'Flush query cache',
-                'cache --doctrine-flush [--result|-r]'            => 'Flush result cache',
-                'cache --doctrine-flush [--metadata|-m]'          => 'Flush metadata cache',
-                'cache --doctrine-flush [--hydration|-h]'         => 'Flush hydration cache',
-                'cache --doctrine-flush [--all|-a]'               => 'Flush all caches',
+                'cache --clear-doctrine'                  => 'Flush all Doctrine caches',
+                'cache --clear-doctrine [--query|-q]'     => 'Flush Doctrine query cache',
+                'cache --clear-doctrine [--result|-r]'    => 'Flush Doctrine result cache',
+                'cache --clear-doctrine [--metadata|-m]'  => 'Flush Doctrine metadata cache',
+                'cache --clear-doctrine [--hydration|-h]' => 'Flush Doctrine hydration cache',
             ));
         }
 
         return $usage;
     }
 }
+
