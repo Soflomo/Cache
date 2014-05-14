@@ -104,6 +104,11 @@ class Module implements
                 'cache --clear-doctrine [--result|-r]'    => 'Flush Doctrine result cache',
                 'cache --clear-doctrine [--metadata|-m]'  => 'Flush Doctrine metadata cache',
                 'cache --clear-doctrine [--hydration|-h]' => 'Flush Doctrine hydration cache',
+
+                array('--query|-q',     'Clear only Doctrine query cache'),
+                array('--result|-r',    'Clear only Doctrine result cache'),
+                array('--metadata|-m',  'Clear only Doctrine metadata cache'),
+                array('--hydration|-h', 'Clear only Doctrine hydration cache'),
             ));
         }
 
