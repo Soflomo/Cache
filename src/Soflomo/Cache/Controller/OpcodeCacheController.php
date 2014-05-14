@@ -177,7 +177,7 @@ echo sprintf("%s OPcache files cleared for web", count($scripts));';
         }
 
         if (ini_get('apc.enabled')) {
-            $console->wtriteLine('APC is not enabled, aborting', Color::RED);
+            $console->writeLine('APC is not enabled, aborting', Color::RED);
             $console->writeLine('Enable APC by the "apc.enabled" setting in your php.ini (see http://www.php.net/apc.configuration)');
             return;
         }
