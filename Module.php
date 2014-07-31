@@ -115,4 +115,3 @@ class Module implements
         return $usage;
     }
 }
-

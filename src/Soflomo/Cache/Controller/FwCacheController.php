@@ -83,8 +83,8 @@ class FwCacheController extends AbstractActionController
             $console->writeLine(sprintf('File %s cannot be found or is not writable', $file), Color::WHITE, Color::RED);
             return;
         }
-        unlink($file);
 
+        unlink($file);
         $console->writeLine(sprintf(
             'Module map file %s cleared', $file
         ));
