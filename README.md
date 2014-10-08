@@ -66,7 +66,7 @@ your application, including all Soflomo\Cache commands.
 ### List all available caches
 
 ```bash
-php public/index.php cache cache --list
+php public/index.php cache --list
 ```
 
 NB. You have to define your caches using the [abstract factory](#configuration).

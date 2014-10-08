@@ -84,7 +84,7 @@ class OpcodeCacheController extends AbstractActionController
         $console->writeLine(sprintf('%s OPcache files cleared', count($scripts)), Color::GREEN);
     }
 
-    protected function cleaerApc()
+    protected function clearApc()
     {
         $console = $this->getConsole();
 
@@ -109,7 +109,7 @@ class OpcodeCacheController extends AbstractActionController
         $results = apc_delete_file($scripts);
 
         foreach ($results as $result) {
-            $console->writeLine('Failed to clear opcode cache for ' . $file, Color::RED);
+            $console->writeLine('Failed to clear opcode cache for ' . $result, Color::RED);
         }
 
         $console->writeLine(sprintf('%s APC files cleared', count($scripts)), Color::GREEN);
