@@ -40,58 +40,46 @@
 
 namespace Soflomo\Cache\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use Zend\ServiceManager\AbstractPluginManager;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class DoctrineCacheController extends AbstractActionController
+class OpcodeCacheControllerFactory implements FactoryInterface
 {
-    public function flushAction()
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return OpcodeCacheController
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $console = $this->getConsole();
-        $config  = $this->getObjectManager()->getConfiguration();
-
-        // All is true when no other params are given
-        $all = !$this->params('query')     && !$this->params('q')
-            && !$this->params('result')    && !$this->params('r')
-            && !$this->params('metadata')  && !$this->params('m')
-            && !$this->params('hydration') && !$this->params('h');
-
-        if ($all || $this->params('query') || $this->params('q')) {
-            $config->getQueryCacheImpl()->flushAll();
-            if (!$all) {
-                $console->writeLine('Doctrine query cache flushed');
-            }
-        }
-        if ($all || $this->params('result') || $this->params('r')) {
-            $config->getResultCacheImpl()->flushAll();
-            if (!$all) {
-                $console->writeLine('Doctrine result cache flushed');
-            }
-        }
-        if ($all || $this->params('metadata') || $this->params('m')) {
-            $config->getMetadataCacheImpl()->flushAll();
-            if (!$all) {
-                $console->writeLine('Doctrine metadata cache flushed');
-            }
-        }
-        if ($all || $this->params('hydration') || $this->params('h')) {
-            $config->getHydrationCacheImpl()->flushAll();
-            if (!$all) {
-                $console->writeLine('Doctrine hydration cache flushed');
-            }
+        if ($serviceLocator instanceof AbstractPluginManager) {
+            $serviceLocator = $serviceLocator->getServiceLocator() ?: $serviceLocator;
         }
 
-        if ($all) {
-            $console->writeLine('All Doctrine caches are flushed');
-        }
+        return $this($serviceLocator, OpcodeCacheController::class);
     }
 
-    protected function getConsole()
+    /**
+     * Create an object
+     *
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
+     * @return OpcodeCacheController
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return $this->getServiceLocator()->get('console');
-    }
-
-    protected function getObjectManager()
-    {
-        return $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        return new OpcodeCacheController($container->get('console'));
     }
 }

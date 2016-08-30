@@ -40,12 +40,35 @@
 
 namespace Soflomo\Cache\Controller;
 
+use Interop\Container\ContainerInterface;
 use Zend\Console\ColorInterface as Color;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\ModuleManager\Listener\ListenerOptions;
+use Zend\Console\Adapter\AdapterInterface as Console;
 
 class FwCacheController extends AbstractActionController
 {
+    /**
+     * @var Console
+     */
+    protected $console;
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * FwCacheController constructor.
+     *
+     * @param Console            $console
+     * @param ContainerInterface $container
+     */
+    public function __construct(Console $console, ContainerInterface $container)
+    {
+        $this->console = $console;
+        $this->container = $container;
+    }
+
     public function clearConfigAction()
     {
         $console = $this->getConsole();
@@ -90,14 +113,20 @@ class FwCacheController extends AbstractActionController
         ));
     }
 
+    /**
+     * @return Console
+     */
     protected function getConsole()
     {
-        return $this->getServiceLocator()->get('console');
+        return $this->console;
     }
 
+    /**
+     * @return ListenerOptions
+     */
     protected function getOptions()
     {
-        $serviceLocator  = $this->getServiceLocator();
+        $serviceLocator  = $this->container;
         $configuration   = $serviceLocator->get('ApplicationConfig');
         $listenerOptions = new ListenerOptions($configuration['module_listener_options']);
 

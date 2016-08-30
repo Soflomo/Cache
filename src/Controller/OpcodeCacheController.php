@@ -41,13 +41,26 @@
 namespace Soflomo\Cache\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-
 use Zend\Console\ColorInterface as Color;
-use Zend\Console\Prompt\Select  as ConsoleSelect;
-use Zend\Console\Prompt\Confirm as ConsoleConfirm;
+use Zend\Console\Adapter\AdapterInterface as Console;
 
 class OpcodeCacheController extends AbstractActionController
 {
+    /**
+     * @var Console
+     */
+    protected $console;
+
+    /**
+     * OpcodeCacheController constructor.
+     *
+     * @param Console $console
+     */
+    public function __construct(Console $console)
+    {
+        $this->console = $console;
+    }
+
     public function clearAction()
     {
         if (PHP_VERSION_ID < 50500) {
@@ -115,8 +128,11 @@ class OpcodeCacheController extends AbstractActionController
         $console->writeLine(sprintf('%s APC files cleared', count($scripts)), Color::GREEN);
     }
 
+    /**
+     * @return Console
+     */
     protected function getConsole()
     {
-        return $this->getServiceLocator()->get('console');
+        return $this->console;
     }
 }

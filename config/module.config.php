@@ -1,102 +1,104 @@
 <?php
 
-return array(
-     'console' => array(
-        'router' => array(
-            'routes' => array(
-                'cache-list' => array(
-                    'options' => array(
-                        'route'    => 'cache --list',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\CacheController',
-                            'action'     => 'list'
-                        ),
-                    ),
-                ),
-                'cache-status' => array(
-                    'options' => array(
-                        'route'    => 'cache --status [<name>] [-h]',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\CacheController',
-                            'action'     => 'status'
-                        ),
-                    ),
-                ),
-                'cache-status-list' => array(
-                    'options' => array(
-                        'route'    => 'cache --status --list [-h]',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\CacheController',
-                            'action'     => 'status-list'
-                        ),
-                    ),
-                ),
-                'cache-clear' => array(
-                    'options' => array(
-                        'route'    => 'cache (--clear|--flush):mode [--force|-f] [<name>] [--expired|-e] [--by-namespace=] [--by-prefix=]',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\CacheController',
-                            'action'     => 'clear'
-                        ),
-                    ),
-                ),
-                'cache-optimize' => array(
-                    'options' => array(
-                        'route'    => 'cache --optimize [<name>]',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\CacheController',
-                            'action'     => 'optimize'
-                        ),
-                    ),
-                ),
+namespace Soflomo\Cache;
 
-                'fw-cache-config' => array(
-                    'options' => array(
-                        'route'    => 'cache --clear-config',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\FwCacheController',
-                            'action'     => 'clear-config'
-                        ),
-                    ),
-                ),
-                'fw-cache-module' => array(
-                    'options' => array(
-                        'route'    => 'cache --clear-module-map',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\FwCacheController',
-                            'action'     => 'clear-module-map'
-                        ),
-                    ),
-                ),
-                'opcode-cache-clear' => array(
-                    'options' => array(
-                        'route'    => 'cache --clear-opcode',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\OpcodeCacheController',
-                            'action'     => 'clear',
-                        ),
-                    ),
-                ),
+return [
+    'console' => [
+        'router' => [
+            'routes' => [
+                'cache-list' => [
+                    'options' => [
+                        'route' => 'cache --list',
+                        'defaults' => [
+                            'controller' => Controller\CacheController::class,
+                            'action' => 'list',
+                        ],
+                    ],
+                ],
+                'cache-status' => [
+                    'options' => [
+                        'route' => 'cache --status [<name>] [-h]',
+                        'defaults' => [
+                            'controller' => Controller\CacheController::class,
+                            'action' => 'status',
+                        ],
+                    ],
+                ],
+                'cache-status-list' => [
+                    'options' => [
+                        'route' => 'cache --status --list [-h]',
+                        'defaults' => [
+                            'controller' => Controller\CacheController::class,
+                            'action' => 'status-list',
+                        ],
+                    ],
+                ],
+                'cache-clear' => [
+                    'options' => [
+                        'route' => 'cache (--clear|--flush):mode [--force|-f] [<name>] [--expired|-e] [--by-namespace=] [--by-prefix=]',
+                        'defaults' => [
+                            'controller' => Controller\CacheController::class,
+                            'action' => 'clear',
+                        ],
+                    ],
+                ],
+                'cache-optimize' => [
+                    'options' => [
+                        'route' => 'cache --optimize [<name>]',
+                        'defaults' => [
+                            'controller' => Controller\CacheController::class,
+                            'action' => 'optimize',
+                        ],
+                    ],
+                ],
 
-                'doctrine-cache-flush' => array(
-                    'options' => array(
-                        'route'    => 'cache --clear-doctrine [--query|-q] [--result|-r] [--metadata|-m] [--hydration|-h]',
-                        'defaults' => array(
-                            'controller' => 'Soflomo\Cache\Controller\DoctrineCacheController',
-                            'action'     => 'flush',
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
+                'fw-cache-config' => [
+                    'options' => [
+                        'route' => 'cache --clear-config',
+                        'defaults' => [
+                            'controller' => Controller\FwCacheController::class,
+                            'action' => 'clear-config',
+                        ],
+                    ],
+                ],
+                'fw-cache-module' => [
+                    'options' => [
+                        'route' => 'cache --clear-module-map',
+                        'defaults' => [
+                            'controller' => Controller\FwCacheController::class,
+                            'action' => 'clear-module-map',
+                        ],
+                    ],
+                ],
+                'opcode-cache-clear' => [
+                    'options' => [
+                        'route' => 'cache --clear-opcode',
+                        'defaults' => [
+                            'controller' => Controller\OpcodeCacheController::class,
+                            'action' => 'clear',
+                        ],
+                    ],
+                ],
 
-    'controllers' => array(
-        'invokables' => array(
-            'Soflomo\Cache\Controller\CacheController'         => 'Soflomo\Cache\Controller\CacheController',
-            'Soflomo\Cache\Controller\FwCacheController'       => 'Soflomo\Cache\Controller\FwCacheController',
-            'Soflomo\Cache\Controller\OpcodeCacheController'   => 'Soflomo\Cache\Controller\OpcodeCacheController',
-            'Soflomo\Cache\Controller\DoctrineCacheController' => 'Soflomo\Cache\Controller\DoctrineCacheController',
-        ),
-    ),
-);
+                'doctrine-cache-flush' => [
+                    'options' => [
+                        'route' => 'cache --clear-doctrine [--query|-q] [--result|-r] [--metadata|-m] [--hydration|-h]',
+                        'defaults' => [
+                            'controller' => Controller\DoctrineCacheController::class,
+                            'action' => 'flush',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+
+    'controllers' => [
+        'factories' => [
+            Controller\CacheController::class => Controller\CacheControllerFactory::class,
+            Controller\FwCacheController::class => Controller\FwCacheControllerFactory::class,
+            Controller\OpcodeCacheController::class => Controller\OpcodeCacheController::class,
+            Controller\DoctrineCacheController::class => Controller\DoctrineCacheController::class,
+        ],
+    ],
+];
