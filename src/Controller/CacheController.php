@@ -283,12 +283,12 @@ class CacheController extends AbstractActionController
         $this->getConsole()->writeLine('You have multiple caches defined, please select one');
         
         foreach ($options as $index => $name) {
-            $this->getConsole()->writeLine(sprintf('%.2d) %s', $index, $name));
+            $this->getConsole()->writeLine(sprintf('%d) %s', $index, $name));
         }
 
         do {
             $answer = (int)ConsoleNumber::prompt(
-                'Please enter a selection:',
+                'Please enter a selection: ',
                 false,
                 false,
                 1,
