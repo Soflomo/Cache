@@ -40,8 +40,9 @@
 
 namespace Soflomo\Cache\Controller;
 
+use Interop\Container\ContainerInterface;
+use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\Mvc\Controller\AbstractActionController;
-
 use Zend\Cache\Storage\ClearExpiredInterface;
 use Zend\Cache\Storage\ClearByNamespaceInterface;
 use Zend\Cache\Storage\ClearByPrefixInterface;
@@ -49,13 +50,33 @@ use Zend\Cache\Storage\OptimizableInterface;
 use Zend\Cache\Storage\AvailableSpaceCapableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 use Zend\Cache\Storage\StorageInterface;
-
 use Zend\Console\ColorInterface as Color;
-use Zend\Console\Prompt\Select  as ConsoleSelect;
 use Zend\Console\Prompt\Confirm as ConsoleConfirm;
+use Zend\Console\Prompt\Number as ConsoleNumber;
 
 class CacheController extends AbstractActionController
 {
+    /**
+     * @var Console
+     */
+    protected $console;
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * CacheController constructor.
+     *
+     * @param Console            $console
+     * @param ContainerInterface $container
+     */
+    public function __construct(Console $console, ContainerInterface $container)
+    {
+        $this->console = $console;
+        $this->container = $container;
+    }
+
     public function listAction()
     {
         $console = $this->getConsole();
@@ -78,12 +99,12 @@ class CacheController extends AbstractActionController
     public function statusListAction()
     {
         $console = $this->getConsole();
-        $caches  = array_keys($this->getcaches());
+        $caches  = array_keys($this->getCaches());
 
         foreach ($caches as $name) {
             $console->writeLine('Status information for ' . $name);
 
-            $cache = $this->getServiceLocator()->get($name);
+            $cache = $this->container->get($name);
             $this->writeCacheStatus($cache);
 
             $console->writeLine('');
@@ -210,8 +231,9 @@ class CacheController extends AbstractActionController
         if (!$cache instanceof OptimizableInterface) {
             $type = get_class($cache);
             $type = substr($type, strrpos($type, '\\') + 1);
-            throw new \Exception(sprintf(
-                'The cache type %s does not support optimizing', strtolower($type)
+            throw new \RuntimeException(sprintf(
+                'The cache type %s does not support optimizing',
+                strtolower($type)
             ));
         }
 
@@ -233,9 +255,9 @@ class CacheController extends AbstractActionController
             $name = $this->getCacheName();
         }
 
-        $cache = $this->getServiceLocator()->get($name);
+        $cache = $this->container->get($name);
         if (!$cache instanceof StorageInterface) {
-            throw new \Exception('Cache is not a cache storage');
+            throw new \RuntimeException('Cache is not a cache storage');
         }
 
         return $cache;
@@ -245,7 +267,7 @@ class CacheController extends AbstractActionController
     {
         $caches = $this->getCaches();
         if (count($caches) === 0) {
-            throw new \Exception('No abstract caches registerd to select');
+            throw new \RuntimeException('No abstract caches registered to select');
         }
 
         if (count($caches) === 1) {
@@ -258,27 +280,45 @@ class CacheController extends AbstractActionController
         array_unshift($options, null);
         unset($options[0]);
 
-        $answer  = ConsoleSelect::prompt(
-            'You have multiple caches defined, please select one',
-            $options
-        );
+        $this->getConsole()->writeLine('You have multiple caches defined, please select one');
+        
+        foreach ($options as $index => $name) {
+            $this->getConsole()->writeLine(sprintf('%d) %s', $index, $name));
+        }
+
+        do {
+            $answer = (int)ConsoleNumber::prompt(
+                'Please enter a selection: ',
+                false,
+                false,
+                1,
+                count($options)
+            );
+
+            if (!array_key_exists($answer, $options)) {
+                $this->getConsole()->writeLine('Invalid selection', Color::WHITE, Color::RED);
+            }
+        } while (!array_key_exists($answer, $options));
 
         return $options[$answer];
     }
 
     protected function getCaches()
     {
-        $config  = $this->getServiceLocator()->get('Config');
+        $config  = $this->container->get('config');
 
         if (!array_key_exists('caches', $config)) {
-            throw new \Exception('No abstract caches registerd to select');
+            throw new \RuntimeException('No abstract caches registerd to select');
         }
 
         return $config['caches'];
     }
 
+    /**
+     * @return Console
+     */
     protected function getConsole()
     {
-        return $this->getServiceLocator()->get('console');
+        return $this->console;
     }
 }

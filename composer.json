@@ -17,16 +17,23 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
-        "zendframework/zend-cache": "~2.0",
-        "zendframework/zend-mvc": "~2.0"
+        "php": "^5.5 || ^7.0",
+        "zendframework/zend-cache": "^2.0",
+        "zendframework/zend-mvc": "^2.0 || ^3.0",
+        "zendframework/zend-modulemanager": "^2.0",
+        "zendframework/zend-console": "^2.0",
+        "zendframework/zend-servicemanager": "^2.7 || ^3.0",
+        "container-interop/container-interop": "^1.0"
+    },
+    "require-dev": {
+        "doctrine/doctrine-orm-module": "~0.9 || ^1.0"
+    },
+    "suggest": {
+        "doctrine/doctrine-orm-module": "Install it to be able to clear doctrine cache"
     },
     "autoload": {
-        "psr-0": {
-            "Soflomo\\Cache": "src/"
-        },
-        "classmap": [
-            "./Module.php"
-        ]
+        "psr-4": {
+            "Soflomo\\Cache\\": "src/"
+        }
     }
 }
