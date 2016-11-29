@@ -28,6 +28,9 @@
     "require-dev": {
         "doctrine/doctrine-orm-module": "~0.9 || ^1.0"
     },
+    "suggest": {
+        "doctrine/doctrine-orm-module": "Install it to be able to clear doctrine cache"
+    },
     "autoload": {
         "psr-4": {
             "Soflomo\\Cache\\": "src/"
